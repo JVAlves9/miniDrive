@@ -13,9 +13,9 @@ var config = {
 
 // entry
 if (!config.entry) config.entry = [];
-config.entry.push("/home/john/Downloads/MiniDrive/MiniDriveEster/build/js/packages/MiniDriveEster/kotlin/MiniDriveEster.js");
+config.entry.push("/home/john/Documentos/MiniDrive/build/js/packages/MiniDriveEster/kotlin/MiniDriveEster.js");
 config.output = {
-    path: "/home/john/Downloads/MiniDrive/MiniDriveEster/build/distributions",
+    path: "/home/john/Documentos/MiniDrive/build/distributions",
     filename: "MiniDriveEster.js"
 };
 
@@ -31,7 +31,7 @@ config.devtool = 'eval-source-map';
 var util = require('util');
 var fs = require("fs");
 var evaluatedConfig = util.inspect(config, {showHidden: false, depth: null, compact: false});
-fs.writeFile("/home/john/Downloads/MiniDrive/MiniDriveEster/build/reports/webpack/MiniDriveEster/webpack.config.evaluated.js", evaluatedConfig, function (err) {});
+fs.writeFile("/home/john/Documentos/MiniDrive/build/reports/webpack/MiniDriveEster/webpack.config.evaluated.js", evaluatedConfig, function (err) {});
 
 // Report progress to console
 // noinspection JSUnnecessarySemicolon
@@ -40,7 +40,7 @@ fs.writeFile("/home/john/Downloads/MiniDrive/MiniDriveEster/build/reports/webpac
     const handler = (percentage, message, ...args) => {
         let p = percentage * 100;
         let msg = `${Math.trunc(p / 10)}${Math.trunc(p % 10)}% ${message} ${args.join(' ')}`;
-        msg = msg.replace(new RegExp("/home/john/Downloads/MiniDrive/MiniDriveEster/build/js", 'g'), '');;
+        msg = msg.replace(new RegExp("/home/john/Documentos/MiniDrive/build/js", 'g'), '');;
         console.log(msg);
     };
 

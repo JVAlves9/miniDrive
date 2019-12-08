@@ -18,10 +18,10 @@
     ]
   },
   entry: [
-    '/home/john/Downloads/MiniDrive/MiniDriveEster/build/js/packages/MiniDriveEster/kotlin/MiniDriveEster.js'
+    '/home/john/Documentos/MiniDrive/build/js/packages/MiniDriveEster/kotlin/MiniDriveEster.js'
   ],
   output: {
-    path: '/home/john/Downloads/MiniDrive/MiniDriveEster/build/distributions',
+    path: '/home/john/Documentos/MiniDrive/build/distributions',
     filename: 'MiniDriveEster.js'
   },
   devtool: 'eval-source-map'

@@ -5,9 +5,9 @@
       <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" isTestModule="true" externalProjectId="MiniDriveEster">
         <dependsOnModuleNames>MiniDriveEster_commonTest</dependsOnModuleNames>
         <sourceSets>
+          <sourceSet>MiniDriveEster.jvmMain</sourceSet>
           <sourceSet>MiniDriveEster.commonTest</sourceSet>
           <sourceSet>MiniDriveEster.commonMain</sourceSet>
-          <sourceSet>MiniDriveEster.jvmMain</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>jvmTest|MiniDriveEster:jvmTest|jvm</externalSystemTestTasks>
