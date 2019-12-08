@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MiniDriveEster-js">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="MiniDriveEster-js.jar">
+      <element id="module-output" name="MiniDriveEster.jsMain" />
+    </root>
+  </artifact>
+</component>
