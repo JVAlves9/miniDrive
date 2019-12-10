@@ -13,17 +13,22 @@
   'use strict';
   var toString = Kotlin.toString;
   var Unit = Kotlin.kotlin.Unit;
+  var equals = Kotlin.equals;
   function myAlert(s) {
     window.alert(s);
   }
-  function main$lambda(it) {
-    var l = new URL(window.document.URL);
-    if (l.searchParams.get('erro') != null)
-      myAlert(toString(l.searchParams.get('erro')));
-    return Unit;
+  function main$lambda(closure$l) {
+    return function (it) {
+      if (closure$l.searchParams.get('erro') != null)
+        myAlert(toString(closure$l.searchParams.get('erro')));
+      return Unit;
+    };
   }
   function main() {
-    window.addEventListener('load', main$lambda);
+    var l = new URL(window.document.URL);
+    window.addEventListener('load', main$lambda(l));
+    if (equals(l.pathname, '/') && l.searchParams.get('cadastro') != null)
+      window.confirm('Fa\xE7a login para acessar :)');
   }
   var package$sample = _.sample || (_.sample = {});
   package$sample.alertPass = myAlert;

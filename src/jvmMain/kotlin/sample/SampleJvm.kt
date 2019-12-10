@@ -642,6 +642,8 @@ fun main() {
                 call.respondHtml {
                     head {
                         title("LPF MiniDrive")
+                        script(src = "/static/kotlin.js") {  }
+                        script(src = "/static/MiniDriveEster.js") {  }
                     }
                     body {
                         if (call.parameters["cadastro"] == "ok") {
