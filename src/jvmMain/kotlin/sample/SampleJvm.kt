@@ -61,45 +61,72 @@ fun main() {
                 call.respondHtml {
                     head {
                         title("Upload")
+                        style {
+                            unsafe {
+                                raw(
+                                    """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: DarkGrey;
+                                        border: none;
+                                        padding: 4px;
+                                    }
+                                """
+                                )
+                            }
+                        }
                     }
                     body {
+                        id = "grad"
                         div {
-                            p {
-                                +"Primeiro botao: selecionar arquivo"
-                                br {}
-                                +"Segundo botao: enviar o arquivo selecionado"
-                                br {}
-                            }
-                            br{}
-
                             // um form cria um espaço que pode ter botoes, caixas de texto, etc que podem
                             // receber informacoes, elas ficam guardadas e relacionadas ao elemento form
                             // no documento
                             // form criado com método post (devolve coisas), acao "/salva", que foi definida
                             // no get("/salva"), e tipo multipartFormData, que define ser possivel receber dados
                             // do tipo arquivo com o form
-                            form (method = FormMethod.post, action = "/salva", encType = FormEncType.multipartFormData) {
-
+                            form(method = FormMethod.post, action = "/salva", encType = FormEncType.multipartFormData) {
                                 // aqui colocamos os elementos visuais e importantes ao form
                                 // esse primeiro é um input hidden, ou seja, escondido ele define que a
                                 // entrada não pode ter mais que "value" em bytes
                                 input(type = InputType.hidden, name = "MAX_FILE_SIZE") {
                                     value = "4194304"
-
                                     // esse input recebe um arquivo qualquer, é um botao na pagina
                                     input(type = InputType.file, name = "arquivo")
                                 }
-                                br {}
-
                                 // esse botao entrega o formulario e chama a "action" do form
-                                input(InputType.submit) {
-                                    value = "Enviar"
+                                p { }
+                                button(type = ButtonType.submit) {
+                                    p { +"Enviar" }
                                 }
                             }
-                        }
-                        br{}
-                        a (href = "/") {
-                           +"Inicio"
+                            a(href = "/") {
+                                p { button { +"Inicio" } }
+                            }
                         }
                     }
                 }
@@ -109,55 +136,85 @@ fun main() {
                 call.respondHtml {
                     head {
                         title("Arquivos Salvos")
+                        style {
+                            unsafe {
+                                raw(
+                                    """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                )
+                            }
+                        }
                     }
                     body {
-                        +"Seus arquivos:"
-                        br{}
-                        br{}
-                        // pega o nome do usuario atualmente logado
-                        val sessao = call.sessions.get<Sessao>()?.usuario
+                        id = "grad"
+                        div {
+                            p { +"Seus arquivos:" }
+                            // pega o nome do usuario atualmente logado
+                            val sessao = call.sessions.get<Sessao>()?.usuario
+                            // um array que contem todos os arquivos presentes na pasta do usuario
+                            // se ela existir
+                            var arquivos: Array<File>? = File("usuarios/$sessao").listFiles()
 
-                        // um array que contem todos os arquivos presentes na pasta do usuario
-                        // se ela existir
-                        var arquivos:Array<File>? = File("usuarios/$sessao").listFiles()
-
-                        if (arquivos != null && arquivos.size != 0) {
-
-                            var extensao = ""
-                            // para cada arquivo dentro do array...
-                            for (f in arquivos) {
-                                extensao = f.extension
-                                div {
-
+                            if (arquivos != null && arquivos.size != 0) {
+                                var extensao = ""
+                                // para cada arquivo dentro do array...
+                                for (f in arquivos) {
+                                    extensao = f.extension
                                     // exibe seu nome...
-                                    +"${f.name} "
-                                    br {}
+                                    p { h3 { strong { +"${f.name} " } } }
 
                                     // link para o get("/visualizar"), que eh aberto numa nova guia gracas
                                     // ao target blank
                                     a(href = "/visualizar?nome=${f.name}", target = ATarget.blank) {
-                                        +"Visualizar"
+                                        p { button { +"Visualizar" } }
                                     }
-                                    br {}
 
                                     // link para o get("/download")
                                     a(href = "/download?nome=${f.name}") {
-                                        +"Download"
+                                        p { button { +"Download" } }
                                     }
-                                    br{}
                                     a(href = "/excluir?nome=${f.name}") {
-                                        +"Excluir"
+                                        p { button { +"Excluir" } }
                                     }
                                 }
-                                br{}
+                            } else {
+                                h3 { strong { +"Você não tem arquivos salvos :o" } }
                             }
-                        } else {
-                            +"Você não tem arquivos salvos :o"
-                            br{}
-                        }
-                        br{}
-                        a (href = "/") {
-                            +"Voltar"
+                            a(href = "/") {
+                                p { button { +"Voltar" } }
+                            }
                         }
                     }
                 }
@@ -175,12 +232,54 @@ fun main() {
                         call.respondHtml {
                             head {
                                 title("Arquivo Excluido")
+                                style {
+                                    unsafe {
+                                        raw(
+                                            """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                        )
+                                    }
+                                }
                             }
                             body {
-                                +"Excluido com sucesso"
-                                br{}
-                                a (href = "/arquivos") {
-                                    +"Voltar"
+                                id = "grad"
+                                div {
+                                    h3 { strong { +"Excluido com sucesso" } }
+                                    a(href = "/arquivos") {
+                                        p { button { +"Voltar" } }
+                                    }
                                 }
                             }
                         }
@@ -188,12 +287,54 @@ fun main() {
                         call.respondHtml {
                             head {
                                 title("Nada Encontrado")
+                                style {
+                                    unsafe {
+                                        raw(
+                                            """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                        )
+                                    }
+                                }
                             }
                             body {
-                                +"Algo aconteceu... nenhum arquivo ou sessão encontrados..."
-                                br{}
-                                a (href = "/") {
-                                    +"Inicio"
+                                id = "grad"
+                                div {
+                                    h3 { strong { +"Algo aconteceu... nenhum arquivo ou sessão encontrados..." } }
+                                    a(href = "/") {
+                                        p { button { +"Inicio" } }
+                                    }
                                 }
                             }
                         }
@@ -222,11 +363,54 @@ fun main() {
                     call.respondHtml {
                         head {
                             title("Erro de exibição")
+                            style {
+                                unsafe {
+                                    raw(
+                                        """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                    )
+                                }
+                            }
                         }
                         body {
-                            +"Esse arquivo não existe!"
-                            a(href = "/arquivos") {
-                                +"Voltar para Arquivos Salvos"
+                            id = "grad"
+                            div {
+                                h3 { strong { +"Esse arquivo não existe!" } }
+                                a(href = "/arquivos") {
+                                    p { button { +"Voltar para Arquivos Salvos" } }
+                                }
                             }
                         }
                     }
@@ -239,7 +423,7 @@ fun main() {
                 val nomedoarquivo = call.parameters["nome"]
 
                 // se o parametro existir...
-                if(nomedoarquivo != null) {
+                if (nomedoarquivo != null) {
                     val usuario = call.sessions.get<Sessao>()?.usuario
 
                     // salva o arquivo requerido
@@ -257,11 +441,54 @@ fun main() {
                         call.respondHtml {
                             head {
                                 title("Erro de download")
+                                style {
+                                    unsafe {
+                                        raw(
+                                            """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                        )
+                                    }
+                                }
                             }
                             body {
-                                +"Esse arquivo não existe!"
-                                a (href = "/arquivos") {
-                                    +"Voltar para Arquivos Salvos"
+                                id = "grad"
+                                div {
+                                    h3 { strong { +"Esse arquivo não existe!" } }
+                                    a(href = "/arquivos") {
+                                        p { button { +"Voltar para Arquivos Salvos" } }
+                                    }
                                 }
                             }
                         }
@@ -273,28 +500,86 @@ fun main() {
                 call.respondHtml {
                     head {
                         title("MiniDrive Login")
-                        script(src = "/static/kotlin.js") {  }
-                        script(src = "/static/MiniDriveEster.js") {  }
+                        script(src = "/static/kotlin.js") { }
+                        script(src = "/static/MiniDriveEster.js") { }
+                        style {
+                            unsafe {
+                                raw(
+                                    """
+                                    #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                    body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                    }
+                                    div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                    }
+                                    button{
+                                        background-color: DarkGrey;
+                                        border: none;
+                                        padding: 4px;
+                                    }
+                                    select{
+                                        background-color: DarkGrey;
+                                    }
+                                    input[type=text], input[type=password], select{
+                                        width: 100%;
+                                        padding: 12px 20px;
+                                        margin: 8px 0;
+                                        display: inline-block;
+                                        border: 1px solid #ccc;
+                                        border-radius: 4px;
+                                        box-sizing: border-box;
+                                    }
+                                """
+                                )
+                            }
+                        }
                     }
 
                     // outro form para fazer login
                     // dessa vez com tipo applicationXWwwFormUrlEncoded porque esse tipo facilita a
                     // leitura de dados do tipo texto recebidos pelo form (ver /verifica para entender)
                     body {
-                        form (action = "/verifica", method = FormMethod.post, encType = FormEncType.applicationXWwwFormUrlEncoded) {
-                            +"Nome de usuario: "
-                            input (type = InputType.text, name = "nomedeusuario")
-                            br {}
-                            +"Senha: "
-
-                            // password faz as letrinhas aparecerem como bolinhas :D
-                            input (type = InputType.password, name = "senha")
-                            br {}
-                            input (type = InputType.submit) {value = "Entrar"}
-                        }
-                        br{}
-                        a(href="/"){
-                            +"Inicio"
+                        id = "grad"
+                        div {
+                            form(
+                                action = "/verifica",
+                                method = FormMethod.post,
+                                encType = FormEncType.applicationXWwwFormUrlEncoded
+                            ) {
+                                p { h3 { +"Nome de usuario: " } }
+                                p { }
+                                input(type = InputType.text, name = "nomedeusuario")
+                                p { h3 { +"Senha: " } }
+                                p { }
+                                // password faz as letrinhas aparecerem como bolinhas :D
+                                input(type = InputType.password, name = "senha")
+                                p { }
+                                button(type = ButtonType.submit) {
+                                    +"Entrar"
+                                }
+                            }
+                            a(href = "/") {
+                                p { button { +"Inicio" } }
+                            }
                         }
                     }
                 }
@@ -313,14 +598,14 @@ fun main() {
 
                 if (conteudoForm == Parameters.Empty)
                     call.respondRedirect("/login?erro=Erro! Tente novamente")
-                var us= false
+                var us = false
                 var ps = false
                 f.forEachLine {
-                    if(it.contains(user.toString())){ //verifica se o usuario existe
+                    if (it.contains(user.toString())) { //verifica se o usuario existe
                         us = true
 
                         //verifica se a senha bate
-                        if(it.substring(it.indexOf('§')+1, it.indexOf('¬')) == conteudoForm["senha"].toString())
+                        if (it.substring(it.indexOf('§') + 1, it.indexOf('¬')) == conteudoForm["senha"].toString())
                             ps = true
                     }
                 }
@@ -337,52 +622,109 @@ fun main() {
                 }
             }
 
-            get("/restorepassword"){
+            get("/restorepassword") {
                 call.respondHtml {
                     head {
                         title("MiniDrive Login")
-                        script(src = "/static/kotlin.js") {  }
-                        script(src = "/static/MiniDriveEster.js") {  }
+                        script(src = "/static/kotlin.js") { }
+                        script(src = "/static/MiniDriveEster.js") { }
+                        style {
+                            unsafe {
+                                raw(
+                                    """
+                                    #grad{background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                        margin: 0;
+                                        height: 100%;
+                                        background-repeat: no-repeat;
+                                        background-attachment: fixed;
+                                    }
+                                    body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                    }
+                                    div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                    }
+                                    button{
+                                        background-color: DarkGrey;
+                                        border: none;
+                                        padding: 4px;
+                                    }
+                                    select{
+                                        background-color: DarkGrey;
+                                    }
+                                    input[type=text], input[type=password], select{
+                                        width: 100%;
+                                        padding: 12px 20px;
+                                        margin: 8px 0;
+                                        display: inline-block;
+                                        border: 1px solid #ccc;
+                                        border-radius: 4px;
+                                        box-sizing: border-box;
+                                    }
+                                """
+                                )
+                            }
+                        }
                     }
                     body {
-                        form (action = "/restore", method = FormMethod.post, encType = FormEncType.applicationXWwwFormUrlEncoded) {
-                            +"Digite seu nome de usuário e a resposta da sua pergunta de segurança para recuperar sua senha."
-                            br{}
-                            +"Nome de usuário:"
-                            input (type = InputType.text, name = "user")
-                            br{}
-                            +"Pergunta de segurança: "
-                            select {
-                                name = "sel"
-                                +"Escolha a pergunta de segurança definida no cadastro"
-                                option {
-                                    value = "1"
-                                    +"Qual o nome da usa mãe?"
+                        id = "grad"
+                        div {
+                            form(
+                                action = "/restore",
+                                method = FormMethod.post,
+                                encType = FormEncType.applicationXWwwFormUrlEncoded
+                            ) {
+                                p { strong { +"Digite seu nome de usuário e a resposta da sua pergunta de segurança para recuperar sua senha." } }
+                                p { +"Nome de usuário:" }
+                                p { }
+                                input(type = InputType.text, name = "user")
+                                p { +"Pergunta de segurança: " }
+                                p { }
+                                select {
+                                    name = "sel"
+                                    +"Escolha a pergunta de segurança definida no cadastro"
+                                    option {
+                                        value = "1"
+                                        +"Qual o nome da usa mãe?"
+                                    }
+                                    option {
+                                        value = "2"
+                                        +"Qual o nome da rua onde você cresceu?"
+                                    }
+                                    option {
+                                        value = "3"
+                                        +"Qual o nome do seu animal de estimação na infância?"
+                                    }
                                 }
-                                option {
-                                    value = "2"
-                                    +"Qual o nome da rua onde você cresceu?"
-                                }
-                                option {
-                                    value = "3"
-                                    +"Qual o nome do seu animal de estimação na infância?"
+                                input(type = InputType.text, name = "question") { }
+                                p { }
+                                button(type = ButtonType.submit) {
+                                    +"Enviar"
                                 }
                             }
-                            input(type = InputType.text, name = "question") {  }
-                            br{}
-                            input (type = InputType.submit) {value = "Enviar"}
-                        }
-                        br{}
-                        a(href="/"){
-                            +"Inicio"
+                            a(href = "/") {
+                                p { button { +"Inicio" } }
+                            }
                         }
                     }
                 }
             }
 
-            post("/restore"){
+            post("/restore") {
                 val form = call.receiveOrNull() ?: Parameters.Empty
-                if(form["user"].toString()=="")
+                if (form["user"].toString() == "")
                     call.respondRedirect("/restorepassword?erro=Sem informaçao de usuario :(")
                 else {
                     val f = File("logins/logins.txt")
@@ -402,13 +744,54 @@ fun main() {
                     //entao a pagina e criada aqui
                     else {
                         call.respondHtml {
-                            body {
-                                p {
-                                    +"Sua senha é: $r"
+                            head {
+                                title("Restaurar")
+                                style {
+                                    unsafe {
+                                        raw(
+                                            """
+                                    #grad{background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                        margin: 0;
+                                        height: 100%;
+                                        background-repeat: no-repeat;
+                                        background-attachment: fixed;
+                                    }
+                                    body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                    }
+                                    div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                    }
+                                    button{
+                                        background-color: DarkGrey;
+                                        border: none;
+                                    }
+                                """
+                                        )
+                                    }
                                 }
-                                br {}
-                                a(href = "/") {
-                                    +"Inicio"
+                            }
+                            body {
+                                id = "grad"
+                                div {
+                                    p {
+                                        +"Sua senha é: $r"
+                                    }
+                                    a(href = "/") {
+                                        button { p { +"Início" } }
+                                    }
                                 }
                             }
                         }
@@ -460,27 +843,118 @@ fun main() {
                                     }
 
                                 // se o diretório tiver menos que 5mb de conteudo, pode salvar lá
-                                if (tamanho/1000000L + (conteudo.size/1000000L) < 5) {
+                                if (tamanho / 1000000L + (conteudo.size / 1000000L) < 5) {
 
                                     // cria um novo arquivo nessa pasta, com os bytes lidos
                                     Files.write(Paths.get("usuarios/${sessao}", infoLida.originalFileName
-                                        ?.filter { x:Char -> x.toInt() in 1..254 }), conteudo)
+                                        ?.filter { x: Char -> x.toInt() in 1..254 }), conteudo
+                                    )
                                     call.respondHtml {
+                                        head {
+                                            title("Salvo")
+                                            style {
+                                                unsafe {
+                                                    raw(
+                                                        """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                                    )
+                                                }
+                                            }
+                                        }
                                         body {
-                                            +"Foi salvo no usuario $sessao"
-                                            br {}
-                                            a(href = "/") {
-                                                +"Inicio"
+                                            id = "grad"
+                                            div {
+                                                h3 { strong { +"Foi salvo no usuario $sessao" } }
+                                                a(href = "/") {
+                                                    p { button { +"Inicio" } }
+                                                }
                                             }
                                         }
                                     }
                                 } else {
                                     call.respondHtml {
+                                        head {
+                                            title("Erro")
+                                            style {
+                                                unsafe {
+                                                    raw(
+                                                        """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                                    )
+                                                }
+                                            }
+                                        }
                                         body {
-                                            +"Você ultrapassou o limite de armazenamento!"
-                                            br{}
-                                            a(href = "/") {
-                                                +"Inicio"
+                                            id = "grad"
+                                            div {
+                                                h3 { button { +"Você ultrapassou o limite de armazenamento!" } }
+                                                a(href = "/") {
+                                                    +"Inicio"
+                                                }
                                             }
                                         }
                                     }
@@ -491,14 +965,59 @@ fun main() {
 
                             // se não foi iniciada nenhuma sessao...
                             call.respondHtml {
-                                body {
-                                    +"Você não iniciou uma sessão! "
-                                    a (href = "/login") {
-                                        +"Login?"
+                                head {
+                                    id = "grad"
+                                    style {
+                                        unsafe {
+                                            raw(
+                                                """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                            )
+                                        }
                                     }
-                                    br{}
-                                    a (href = "/") {
-                                        +"Inicio"
+                                }
+                                body {
+                                    id = "grad"
+                                    div {
+                                        h3 { strong { +"Você não iniciou uma sessão! " } }
+                                        a(href = "/login") {
+                                            p { button { +"Login?" } }
+                                        }
+                                        a(href = "/") {
+                                            p { button { +"Inicio" } }
+                                        }
                                     }
                                 }
                             }
@@ -511,60 +1030,161 @@ fun main() {
                     call.respondHtml {
                         head {
                             title("Erro!")
+                            style {
+                                unsafe {
+                                    raw(
+                                        """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                    )
+                                }
+                            }
                         }
                         body {
-                            +"Você não selecionou um arquivo! "
-                            a (href = "/upload") {
-                                +"Upload?"
+                            id = "grad"
+                            div {
+                                h3 { strong { +"Você não selecionou um arquivo! " } }
+                                a(href = "/upload") {
+                                    p { button { +"Upload?" } }
+                                }
                             }
                         }
                     }
                 }
             }
 
-            get("/sign"){
+            get("/sign") {
                 //quase a mesma coisa que o login, mas com um espaco para repetir senha
                 call.respondHtml {
-                    head{
-                        title("Sing in")
-                        script(src = "/static/kotlin.js") {  }
-                        script(src = "/static/MiniDriveEster.js") {  }
+                    head {
+                        title("Entrar")
+                        script(src = "/static/kotlin.js") { }
+                        script(src = "/static/MiniDriveEster.js") { }
+                        style {
+                            unsafe {
+                                raw(
+                                    """
+                                    #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                    body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                    }
+                                    div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                    }
+                                    button{
+                                        background-color: DarkGrey;
+                                        border: none;
+                                        padding: 4px;
+                                    }
+                                    select{
+                                        background-color: DarkGrey;
+                                    }
+                                    input[type=text], input[type=password], select{
+                                        width: 100%;
+                                        padding: 12px 20px;
+                                        margin: 8px 0;
+                                        display: inline-block;
+                                        border: 1px solid #ccc;
+                                        border-radius: 4px;
+                                        box-sizing: border-box;
+                                    }
+                                """
+                                )
+                            }
+                        }
                     }
                     body {
-                        form(action = "/confirma", method = FormMethod.post, encType = FormEncType.applicationXWwwFormUrlEncoded) {
-                            name = "sign"
-                            id = "sign"
-                            +"Nome de usuário:"
-                            input (type = InputType.text, name = "user")
-                            br {}
-                            +"Senha: "
-                            input (type = InputType.password, name = "password")
-                            br {}
-                            +"Repita a senha:"
-                            input (type = InputType.password, name = "password2")
-                            br{}
-                            select {
-                                name = "sel"
-                                option {
-                                    value = "1"
-                                    +"Qual o nome da usa mãe?"
+                        id = "grad"
+                        div {
+                            form(
+                                action = "/confirma",
+                                method = FormMethod.post,
+                                encType = FormEncType.applicationXWwwFormUrlEncoded
+                            ) {
+                                name = "sign"
+                                id = "sign"
+                                p { h3 { +"Nome de usuário: " } }
+                                input(type = InputType.text, name = "user")
+                                p { h3 { +"Senha: " } }
+                                input(type = InputType.password, name = "password")
+                                p { h3 { +"Repita a senha: " } }
+                                input(type = InputType.password, name = "password2")
+                                p { h3 { +"Pergunta de segurança: " } }
+                                p { }
+                                select {
+                                    name = "sel"
+                                    option {
+                                        value = "1"
+                                        +"Qual o nome da usa mãe?"
+                                    }
+                                    option {
+                                        value = "2"
+                                        +"Qual o nome da rua onde você cresceu?"
+                                    }
+                                    option {
+                                        value = "3"
+                                        +"Qual o nome do seu animal de estimação na infância?"
+                                    }
                                 }
-                                option {
-                                    value = "2"
-                                    +"Qual o nome da rua onde você cresceu?"
-                                }
-                                option {
-                                    value = "3"
-                                    +"Qual o nome do seu animal de estimação na infância?"
+                                input(type = InputType.text, name = "question") { }
+                                p { }
+                                button(type = ButtonType.submit) {
+                                    +"Cadastro"
                                 }
                             }
-                            input(type = InputType.text,name = "question") {  }
-                            br{}
-                            input(type = InputType.submit) {value = "Cadastro"}
-                        }
-                        br{}
-                        a(href = "/"){
-                            +"Voltar"
+
+                            a(href = "/") {
+                                p { button { +"Voltar" } }
+                            }
                         }
                     }
                 }
@@ -573,13 +1193,13 @@ fun main() {
             post("/confirma") {
                 //so verifica as condicoes da senha e do usuario, não tem página
                 val signForm = call.receiveOrNull() ?: Parameters.Empty
-                if(signForm == Parameters.Empty)
+                if (signForm == Parameters.Empty)
                     call.respondRedirect("/sign")
-                else if(signForm["user"] == "" || signForm["password"] == "" || signForm["password2"] == "" || signForm["question"]=="")
+                else if (signForm["user"] == "" || signForm["password"] == "" || signForm["password2"] == "" || signForm["question"] == "")
                     call.respondRedirect("/sign?erro=Preencha todos os campos! >:(")
-                else if(signForm["password"] != signForm["password2"])
+                else if (signForm["password"] != signForm["password2"])
                     call.respondRedirect("/sign?erro=Senhas nao correspodentes D:")
-                else{
+                else {
                     val f = File("logins/logins.txt")
                     var usuarioJaCadastrado = false
 
@@ -587,13 +1207,14 @@ fun main() {
                     val usuarios = diretorio.list()
 
                     f.forEachLine {
-                        if(it.contains(signForm["user"].toString()))
-                            usuarioJaCadastrado=true
+                        if (it.contains(signForm["user"].toString()))
+                            usuarioJaCadastrado = true
                     }
-                    if(usuarioJaCadastrado)
+                    if (usuarioJaCadastrado)
                         call.respondRedirect("/sign?erro=Nome de usuario em uso :(")
-                    else if (signForm["user"].toString().contains('§') || signForm["password"].toString().contains('§')||
-                        signForm["user"].toString().contains('¬')|| signForm["password"].toString().contains('¬'))
+                    else if (signForm["user"].toString().contains('§') || signForm["password"].toString().contains('§') ||
+                        signForm["user"].toString().contains('¬') || signForm["password"].toString().contains('¬')
+                    )
                         call.respondRedirect("/sign?erro=Caracteree '§' e '¬' invalidos para cadastro!")
                     else if (signForm["user"].toString().length > 15 || signForm["user"].toString().length < 3)
                         call.respondRedirect("/sign?erro=Usuario entre 3 e 15 caracteres!")
@@ -606,7 +1227,7 @@ fun main() {
                             }
                             body {
                                 +"O servidor já está cheio... tente se cadastrar depois :D"
-                                br{}
+                                br {}
                                 a(href = "/") {
                                     +"Inicio"
                                 }
@@ -621,18 +1242,56 @@ fun main() {
             }
 
             get("/logout") {
-
                 // essa chamada eh suficiente para desfazer a sessao atual
                 call.sessions.clear<Sessao>()
                 call.respondHtml {
                     head {
-                        title("Logout")
+                        title("Sair")
+                        style {
+                            unsafe {
+                                raw(
+                                    """
+                                    #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                    body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                    }
+                                    div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                    }
+                                    button{
+                                        background-color: DarkGrey;
+                                        border: none;
+                                    }
+                                """
+                                )
+                            }
+                        }
                     }
                     body {
-                        +"Você saiu!"
-                        br {}
-                        a (href = "/") {
-                            +"Inicio"
+                        id = "grad"
+                        div {
+                            h3 { +"Você saiu!" }
+                            a(href = "/") {
+                                p { button { +"Início" } }
+                            }
                         }
                     }
                 }
@@ -640,43 +1299,94 @@ fun main() {
 
             get("/") {
                 call.respondHtml {
+
                     head {
                         title("LPF MiniDrive")
-                        script(src = "/static/kotlin.js") {  }
-                        script(src = "/static/MiniDriveEster.js") {  }
+                        style {
+                            unsafe {
+                                raw(
+                                    """
+                                   #grad{
+                                            background-image: linear-gradient(DodgerBlue, CornFlowerBlue, White);
+                                            margin: 0;
+                                            height: 100%;
+                                            background-repeat: no-repeat;
+                                            background-attachment: fixed;
+                                        }
+                                   body {
+                                        height: 100%;
+                                        color: White;
+                                        font-family: "Times New Roman", Times;
+                                        margin: 0;
+                                        padding: 0;
+                                   }
+                                   h1{
+                                        text-align: center;
+                                        opacity: 0.8;
+                                   }
+                                   h3{
+                                        text-align: center;
+                                   }
+                                   div{
+                                        background-color: Black;
+                                        opacity: 0.75;
+                                        padding: 10px 40px; 
+                                        margin: 0;
+                                        position: absolute;
+                                        top: 50%;
+                                        left: 50%;
+                                        -ms-transform: translate(-50%, -50%);
+                                        transform: translate(-50%, -50%);
+                                   }
+                                   button{
+                                        background-color: Grey;
+                                        border: none;
+                                   }
+                                """
+                                )
+                            }
+                        }
                     }
                     body {
-                        if (call.parameters["cadastro"] == "ok") {
-                            +"Faça login para acessar :)"
-                            br{}
-                        }
-                        +"Olá ${call.sessions.get<Sessao>()?.usuario?:"visitante"}!"
-                        if (call.sessions.get<Sessao>() == null) {
-                            br{}
-                            a(href = "/login") {
-                                +"Login"
+                        id = "grad"
+                        div {
+                            if (call.sessions.get<Sessao>() != null) {
+
+                                h1 { strong { +"Mini Drive" } }
+                                h3 { +"Olá ${call.sessions.get<Sessao>()?.usuario ?: "visitante"}!" }
+
+                            } else {
+                                h1 { strong { +"Mini Drive" } }
+                                h3 { +"Olá ${call.sessions.get<Sessao>()?.usuario ?: "visitante"}!" }
                             }
-                            br{}
-                            a(href="/sign"){
-                                +"Sign in"
+                            if (call.sessions.get<Sessao>() == null) {
+                                p {
+                                    a(href = "/login") {
+                                        button { +"Entrar" }
+                                    }
+                                }
+                                p {
+                                    a(href = "/sign") {
+                                        button { +"Cadastro" }
+                                    }
+                                }
+                                p {
+                                    a(href = "/restorepassword") {
+                                        button { +"Esqueci minha senha" }
+                                    }
+                                }
                             }
-                            br{}
-                            a(href="/restorepassword"){
-                                +"Esqueceu sua senha?"
-                            }
-                        }
-                        if (call.sessions.get<Sessao>() != null) {
-                            br{}
-                            a(href = "/logout") {
-                                +"Logout"
-                            }
-                            br{}
-                            a (href = "/upload") {
-                                +"Upload"
-                            }
-                            br{}
-                            a (href = "/arquivos") {
-                                +"Arquivos Salvos"
+
+                            if (call.sessions.get<Sessao>() != null) {
+                                a(href = "/logout") {
+                                    p { button { +"Sair" } }
+                                }
+                                a(href = "/upload") {
+                                    p { button { +"Upload" } }
+                                }
+                                a(href = "/arquivos") {
+                                    p { button { +"Arquivos Salvos" } }
+                                }
                             }
                         }
                     }
