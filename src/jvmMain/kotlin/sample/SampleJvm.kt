@@ -1302,6 +1302,8 @@ fun main() {
 
                     head {
                         title("LPF MiniDrive")
+                        script(src = "/static/kotlin.js") { }
+                        script(src = "/static/MiniDriveEster.js"){}
                         style {
                             unsafe {
                                 raw(
